@@ -3,12 +3,10 @@ from time import sleep
 from threading import Thread, Lock
 
 
-class Bank(Thread):
-    lock = Lock()
-    balance = 0
-
+class Bank:
     def __init__(self):
-        Thread.__init__(self)
+        self.lock = Lock()
+        self.balance = 0
 
     def deposit(self):
         for _ in range(100):
@@ -32,14 +30,11 @@ class Bank(Thread):
 
 
 bk = Bank()
-
 # Т.к. методы принимают self, в потоки нужно передать сам объект класса Bank
 th1 = Thread(target=Bank.deposit, args=(bk,))
 th2 = Thread(target=Bank.take, args=(bk,))
-
 th1.start()
 th2.start()
 th1.join()
 th2.join()
-
 print(f'Итоговый баланс: {bk.balance}')
